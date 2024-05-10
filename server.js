@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
+const menuRoutes = require("./routes/menuRoutes");
 require("dotenv").config();
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(cors());
 
 //Routes
 app.use("/api", authRoutes);
+app.use("/api", menuRoutes);
 
 //Starta applikation
 app.listen(port, () => {

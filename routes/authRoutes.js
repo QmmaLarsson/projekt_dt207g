@@ -9,7 +9,7 @@ mongoose.set("strictQuery", false);
 mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log("Ansluten till MongoDB");
 }).catch((error) => {
-    console.error("Error vid anslutning till MongoDB")
+    console.error("Error vid anslutning till MongoDB:" + error)
 });
 
 //Användar-model
