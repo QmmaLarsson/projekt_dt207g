@@ -14,6 +14,10 @@ app.use(cors());
 app.use("/api", authRoutes);
 app.use("/api", menuRoutes);
 
+app.get("/", (req, res) => {
+    res.render("index");
+});
+
 app.get("/api", (req, res) => {
     res.json({ message: "Välkommen till detta restaurang-API" })
 });
