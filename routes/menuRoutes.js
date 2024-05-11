@@ -31,7 +31,7 @@ router.get("/menu", async (req, res) => {
 });
 
 //Posta item till menyn
-router.post("/menu", async (req, res) => {
+router.post("/menu", authenticateToken, async (req, res) => {
     try {
         const { name, type, description, price} = req.body;
 
@@ -51,7 +51,7 @@ router.post("/menu", async (req, res) => {
 });
 
 //Ta bort item från menyn
-router.delete("/menu/:id", async (req, res) => {
+router.delete("/menu/:id", authenticateToken, async (req, res) => {
     try {
         const itemId = req.params.id;
 
@@ -65,7 +65,7 @@ router.delete("/menu/:id", async (req, res) => {
 });
 
 //Uppdatera item på menyn
-router.put("/menu/:id", async (req, res) => {
+router.put("/menu/:id", authenticateToken, async (req, res) => {
     try {
         const itemId = req.params.id;
         const updatedItem = req.body;
@@ -78,5 +78,19 @@ router.put("/menu/:id", async (req, res) => {
         return res.status(500).json({ message: "Det uppstod ett fel vid uppdatering av item på menyn.", error: error });
     }
 });
+
+//Validering av token
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (token == null) res.status(401).json({ message: "Token saknas - du har ej tillgång till denna route" });
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, username) => {
+        if (err) return res.status(403).json({ message: "Felaktigt JWT-token" });
+        req.username = username;
+        next();
+    });
+}
+
 
 module.exports = router;
