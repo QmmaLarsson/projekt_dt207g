@@ -14,6 +14,10 @@ app.use(cors());
 app.use("/api", authRoutes);
 app.use("/api", menuRoutes);
 
+app.get("/api", (req, res) => {
+    res.json({ message: "Välkommen till detta restaurang-API" })
+});
+
 //Starta applikation
 app.listen(port, () => {
     console.log(`Severn är startad på http://localhost:${port}`);
