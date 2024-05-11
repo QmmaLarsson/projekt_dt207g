@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
 //Menu-model
 const Menu = require("../models/menu");
 
-//Hämta maträtter från skyddad route
+//Hämta items från menyn
 router.get("/menu", async (req, res) => {
     try {
         // Hämta jobbdata från databasen
@@ -30,7 +30,7 @@ router.get("/menu", async (req, res) => {
     }
 });
 
-//Posta en maträtt till skyddad route
+//Posta item till menyn
 router.post("/menu", async (req, res) => {
     try {
         const { name, type, description, price} = req.body;
@@ -40,13 +40,42 @@ router.post("/menu", async (req, res) => {
             return res.status(400).json({ error: "Ogiltig inmatning, vänligen fyll i alla fält" });
         }
 
-        //Korrekt input - Skapa ny maträtt
+        //Korrekt input - Skapa nytt item på menyn
         const newItem = new Menu({ name, type, description, price, });
         await newItem.save();
         res.status(201).json({ message: "Nytt item tillagt på menyn" });
 
     } catch (error) {
         res.status(500).json({ error: "Server error" });
+    }
+});
+
+//Ta bort item från menyn
+router.delete("/menu/:id", async (req, res) => {
+    try {
+        const itemId = req.params.id;
+
+        const result = await Menu.findByIdAndDelete(itemId);
+
+        return res.json(result);
+    } catch (error) {
+        //Errorhantering
+        return res.status(500).json({ message: "Det uppstod ett fel vid borttagning av item på menyn", error: error });
+    }
+});
+
+//Uppdatera item på menyn
+router.put("/menu/:id", async (req, res) => {
+    try {
+        const itemId = req.params.id;
+        const updatedItem = req.body;
+
+        const result = await Menu.findByIdAndUpdate(itemId, updatedItem, { new: true });
+
+        return res.json(result);
+    } catch (error) {
+        //Errorhantering
+        return res.status(500).json({ message: "Det uppstod ett fel vid uppdatering av item på menyn.", error: error });
     }
 });
 
